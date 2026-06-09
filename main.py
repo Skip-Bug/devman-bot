@@ -39,11 +39,14 @@ def main():
             elif review_status.get('status') == "timeout":
                 timestamp = review_status.get('timestamp_to_request')
 
-        except requests.exceptions.RequestException:
-            time.sleep(10)
+        except requests.exceptions.ReadTimeout:
+            time.sleep(5)
             print('Попытаемся еще раз')
             continue
-
+        except requests.exceptions.ConnectionError:
+            time.sleep(5)
+            print('Попытаемся еще раз')
+            continue        
         except KeyboardInterrupt:
             print('Остановленно пользователем')
             break
