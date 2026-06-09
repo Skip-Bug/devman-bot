@@ -26,7 +26,7 @@ def main():
 
     # url = 'https://dvmn.org/api/user_reviews/'
     url = 'https://dvmn.org/api/long_polling/'
-    token = os.getenv('TOKEN')
+    token = os.getenv('DEVMAN_TOKEN')
     timestamp = None
     while True:
         try:
