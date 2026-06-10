@@ -1,3 +1,5 @@
+"""Бот для проверки ревью на dvmn.org"""
+import argparse
 import os
 import time
 import logging
@@ -8,6 +10,13 @@ from dotenv import load_dotenv
 from telegram import Bot
 
 
+def create_parser():
+    """Создает парсер для айди чата"""
+    parser = argparse.ArgumentParser(
+        description='Бот для проверки ревью на dvmn.org'
+    )
+    parser.add_argument('--id', help='caht_id чата', type=int)
+    return parser
 
 def check_has_review(url, token, timestamp=None):
     """Проверяет есть ли новые ревью"""
@@ -64,8 +73,12 @@ def main():
     timestamp = None
     bot = Bot(token=tg_token)
 
+    
+    parser = create_parser()
+    args = parser.parse_args()
+    
     username = os.getenv('TG_USERNAME')
-    chat_id = os.getenv('TG_CHAT_ID')
+    chat_id = args.id or os.getenv('TG_CHAT_ID')
 
     while True:
         try:
