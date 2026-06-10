@@ -1,6 +1,7 @@
 from telegram import Bot
 from dotenv import load_dotenv
 import os
+from pprint import pprint
 
 
 def main():
@@ -10,8 +11,11 @@ def main():
         return
     bot = Bot(token=token)
     updates = bot.get_updates()
-    print(updates[-1])
-    bot.send_message(text='Привет Леонид!', chat_id=5133218174)
+    update = updates[-1]
+
+    username = update.message.chat.username
+    chat_id = update.message.chat.id
+    bot.send_message(chat_id=chat_id, text=f'Привет! @{username}')
 
 
 if __name__ == '__main__':
