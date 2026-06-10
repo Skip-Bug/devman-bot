@@ -85,7 +85,7 @@ def main():
             if review_status.get('status') == "found":
 
                 timestamp = review_status.get('last_attempt_timestamp')
-                logging.info(f'Преподаватель проверил работу!')
+                logging.info('Преподаватель проверил работу!')
                 for attempt in review_status.get('new_attempts'):
                     lesson_title = attempt['lesson_title']
                     is_negative = attempt['is_negative']
