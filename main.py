@@ -18,6 +18,7 @@ def create_parser():
     parser.add_argument('--id', help='caht_id чата', type=int)
     return parser
 
+
 def check_has_review(url, token, timestamp=None):
     """Проверяет есть ли новые ревью"""
     headers = {'Authorization': f'Token {token}'}
@@ -63,7 +64,6 @@ def main():
 
     load_dotenv()
 
-    # url = 'https://dvmn.org/api/user_reviews/'
     url = 'https://dvmn.org/api/long_polling/'
     tg_token = os.getenv('TG_BOT_TOKEN')
     token = os.getenv('DEVMAN_TOKEN')
@@ -73,10 +73,9 @@ def main():
     timestamp = None
     bot = Bot(token=tg_token)
 
-    
     parser = create_parser()
     args = parser.parse_args()
-    
+
     username = os.getenv('TG_USERNAME')
     chat_id = args.id or os.getenv('TG_CHAT_ID')
 
