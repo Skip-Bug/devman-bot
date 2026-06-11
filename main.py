@@ -15,8 +15,7 @@ def check_has_review(token, timestamp=None):
     headers = {'Authorization': f'Token {token}'}
     params = {'timestamp': timestamp} if timestamp else None
 
-    response = requests.get(url, headers=headers, timeout=5, params=params)
-
+    response = requests.get(url, headers=headers, timeout=95, params=params)
     response.raise_for_status()
     return response.json()
 
@@ -31,6 +30,7 @@ def send_message(bot, bot_params):
         status = (
             'Преподавателю все понравилось, можно приступать к следующему уроку!'
         )
+
     text = (
         f"@{bot_params['username']},\n"
         f"У вас проверили работу\n"
