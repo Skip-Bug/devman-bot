@@ -13,40 +13,32 @@ def check_has_review(token, timestamp=None):
     """Проверяет есть ли новые ревью"""
     url = 'https://dvmn.org/api/long_polling/'
     headers = {'Authorization': f'Token {token}'}
-    params = {'timestamp': timestamp}
-    if not timestamp:
-        response = requests.get(url, headers=headers, timeout=95)
-    else:
-        response = requests.get(
-            url, headers=headers,
-            timeout=95, params=params
-        )
+    params = {'timestamp': timestamp} if timestamp else None
+    response = requests.get(url, headers=headers, timeout=95, params=params)
 
     response.raise_for_status()
     return response.json()
 
 
-def send_message(bot, params):
+def send_message(bot, bot_params):
     """Отправляет сообщение в телеграм"""
-    if params['is_negative']:
-        bot.send_message(
-            chat_id=params['chat_id'],
-            text=f"""@{params['username']},
-        У вас проверили работу 
-        {params['lesson_title']},
-        ссылка: {params['lesson_url']},
-        К сожалению, она не прошла проверку"""
-        )
+
+    if bot_params['is_negative']:
+        status = 'К сожалению, она не прошла проверку'
 
     else:
-        bot.send_message(
-            chat_id=params['chat_id'],
-            text=f"""@{params['username']},
-        У вас проверили работу 
-        {params['lesson_title']},
-        ссылка: {params['lesson_url']},
-        Преподавателю все понравилось, можно приступать к следующему уроку!"""
+        status = (
+            'Преподавателю все понравилось, можно приступать к следующему уроку!'
         )
+    text = (
+        f"@{bot_params['username']},\n"
+        f"У вас проверили работу\n"
+        f"{bot_params['lesson_title']},\n"
+        f"ссылка: {bot_params['lesson_url']},\n"
+        f"{status}"
+    )
+
+    bot.send_message(chat_id=bot_params['chat_id'], text=text)
 
 
 def main():
@@ -78,7 +70,7 @@ def main():
                     is_negative = attempt['is_negative']
                     lesson_url = attempt.get('lesson_url')
 
-                    params = {
+                    bot_params = {
                         'username': username,
                         'chat_id': chat_id,
                         'lesson_title': lesson_title,
@@ -86,7 +78,7 @@ def main():
                         'lesson_url': lesson_url
                     }
 
-                    send_message(bot, params)
+                    send_message(bot, bot_params)
 
             elif review_status.get('status') == "timeout":
                 timestamp = review_status.get('timestamp_to_request')
