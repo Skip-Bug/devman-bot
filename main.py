@@ -14,7 +14,8 @@ def check_has_review(token, timestamp=None):
     url = 'https://dvmn.org/api/long_polling/'
     headers = {'Authorization': f'Token {token}'}
     params = {'timestamp': timestamp} if timestamp else None
-    response = requests.get(url, headers=headers, timeout=95, params=params)
+
+    response = requests.get(url, headers=headers, timeout=5, params=params)
 
     response.raise_for_status()
     return response.json()
@@ -42,21 +43,20 @@ def send_message(bot, bot_params):
 
 
 def main():
-
-    logging.basicConfig(filename="sample.log", level=logging.INFO)
-
     load_dotenv()
+    logging.basicConfig(
+        filename="sample.log",
+        level=logging.INFO,
+        encoding='utf-8'
+    )
 
-    tg_token = os.getenv('TG_BOT_TOKEN')
-    token = os.getenv('DEVMAN_TOKEN')
-    if not token or not tg_token:
-        logging.error('Токены не найдены')
-        return
+    tg_token = os.environ['TG_BOT_TOKEN']
+    token = os.environ['DEVMAN_TOKEN']
+    username = os.environ['TG_USERNAME']
+    chat_id = os.environ['TG_CHAT_ID']
+
     timestamp = None
     bot = Bot(token=tg_token)
-
-    username = os.getenv('TG_USERNAME')
-    chat_id = os.getenv('TG_CHAT_ID')
 
     while True:
         try:
@@ -84,8 +84,6 @@ def main():
                 timestamp = review_status.get('timestamp_to_request')
 
         except requests.exceptions.ReadTimeout:
-            time.sleep(5)
-            logging.error('Превышено время ожидания')
             continue
         except requests.exceptions.ConnectionError:
             time.sleep(5)
