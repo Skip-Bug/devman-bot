@@ -9,8 +9,9 @@ from dotenv import load_dotenv
 from telegram import Bot
 
 
-def check_has_review(url, token, timestamp=None):
+def check_has_review(token, timestamp=None):
     """Проверяет есть ли новые ревью"""
+    url = 'https://dvmn.org/api/long_polling/'
     headers = {'Authorization': f'Token {token}'}
     params = {'timestamp': timestamp}
     if not timestamp:
@@ -54,7 +55,6 @@ def main():
 
     load_dotenv()
 
-    url = 'https://dvmn.org/api/long_polling/'
     tg_token = os.getenv('TG_BOT_TOKEN')
     token = os.getenv('DEVMAN_TOKEN')
     if not token or not tg_token:
@@ -68,7 +68,7 @@ def main():
 
     while True:
         try:
-            review_status = check_has_review(url, token, timestamp)
+            review_status = check_has_review(token, timestamp)
             if review_status.get('status') == "found":
 
                 timestamp = review_status.get('last_attempt_timestamp')
