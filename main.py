@@ -12,13 +12,19 @@ TIMESTAMP_FILE = 'last_timestamp.txt'
 
 
 def save_timestamp(timestamp):
-    """Сохраняет точку времени последнего обновления"""
+    """Сохраняет точку времени последнего обновления.
+    
+    Эта функция берет числовое значение timestamp и записывает его в файл,
+    чтобы бот мог восстановить свою работу после перезапуска."""
     with open(TIMESTAMP_FILE, 'w') as file:
         file.write(str(timestamp))
 
 
 def load_timestamp():
-    """Загружает точку времени последнего обновления"""
+    """Загружает точку времени последнего обновления.
+    
+    Эта функция берет числовое значение timestamp из файла,
+    чтобы бот мог восстановить свою работу после перезапуска."""
     try:
         with open(TIMESTAMP_FILE, 'r') as file:
             return int(file.read().strip())
@@ -27,7 +33,9 @@ def load_timestamp():
 
 
 def check_has_review(token, timestamp=None):
-    """Проверяет есть ли новые ревью"""
+    """Проверяет есть ли новые ревью.
+    
+    Функция делает GET-запрос к API dvmn.org."""
     url = 'https://dvmn.org/api/long_polling/'
     headers = {'Authorization': f'Token {token}'}
     params = {'timestamp': timestamp} if timestamp else None
@@ -38,7 +46,9 @@ def check_has_review(token, timestamp=None):
 
 
 def send_message(bot, bot_params):
-    """Отправляет сообщение в телеграм"""
+    """Отправляет сообщение в телеграм.
+    
+    Бот сообщает пользователю результаты проверки и ссылку на урок."""
 
     if bot_params['is_negative']:
         status = 'К сожалению, она не прошла проверку'
@@ -60,6 +70,9 @@ def send_message(bot, bot_params):
 
 
 def main():
+    """Основная функция программы.
+    
+    Делает записи в лог-файл, загружает данные из `.env` и запускает бота."""
     load_dotenv()
     logging.basicConfig(
         filename="sample.log",
