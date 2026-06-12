@@ -8,6 +8,23 @@ import requests
 from dotenv import load_dotenv
 from telegram import Bot
 
+TIMESTAMP_FILE = 'last_timestamp.txt'
+
+
+def save_timestamp(timestamp):
+    """Сохраняет точку времени последнего обновления"""
+    with open(TIMESTAMP_FILE, 'w') as file:
+        file.write(str(timestamp))
+
+
+def load_timestamp():
+    """Загружает точку времени последнего обновления"""
+    try:
+        with open(TIMESTAMP_FILE, 'r') as file:
+            return int(file.read().strip())
+    except (FileNotFoundError, ValueError):
+        return None
+
 
 def check_has_review(token, timestamp=None):
     """Проверяет есть ли новые ревью"""
@@ -55,7 +72,7 @@ def main():
     username = os.environ['TG_USERNAME']
     chat_id = os.environ['TG_CHAT_ID']
 
-    timestamp = None
+    timestamp = load_timestamp()
     bot = Bot(token=tg_token)
 
     while True:
@@ -64,7 +81,9 @@ def main():
             if review_status.get('status') == "found":
 
                 timestamp = review_status.get('last_attempt_timestamp')
+                save_timestamp(timestamp)
                 logging.info('Преподаватель проверил работу!')
+                
                 for attempt in review_status.get('new_attempts'):
                     lesson_title = attempt['lesson_title']
                     is_negative = attempt['is_negative']
@@ -82,7 +101,7 @@ def main():
 
             elif review_status.get('status') == "timeout":
                 timestamp = review_status.get('timestamp_to_request')
-
+                save_timestamp(timestamp)
         except requests.exceptions.ReadTimeout:
             continue
         except requests.exceptions.ConnectionError:
