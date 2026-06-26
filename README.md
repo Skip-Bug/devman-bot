@@ -59,7 +59,7 @@ python main.py
 | `TG_BOT_TOKEN` | Токен вашего Telegram-бота                                          |
 | `DEVMAN_TOKEN` | Токен API dvmn.org                                                  |
 | `TG_USERNAME`  | Ваш никнейм в Telegram (без @)                                      |
-| `TG_CHAT_ID`   | ID чата для уведомлений (опционально, если не передан через `--id`) |
+| `TG_CHAT_ID`   | ID чата для уведомлений  |
 
 ## 📚 Зависимости
 
